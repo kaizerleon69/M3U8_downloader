@@ -4,14 +4,16 @@ import json
 from pyrogram import filters, Client
 from pyrogram.types import Message
 import os
+
+if os.path.exists('config.env'):
+  load_dotenv('config.env')
  
-app = Client(
-    "Mlaith",
-    api_id=3328272,
-    api_hash="87274334",
-    bot_token="618769325"
-)
- 
+api_id = int(os.environ.get("API_ID"))
+api_hash = os.environ.get("API_HASH")
+bot_token = os.environ.get("BOT_TOKEN")
+
+app = Client("Malith:memory:", api_id=api_id, api_hash=api_hash, bot_token=bot_token)
+
   # sending files
 async def sender(msg, download_location, fileName):
     await msg.reply_document(download_location, caption=f"{fileName}",quote=True)
