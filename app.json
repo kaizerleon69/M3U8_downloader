@@ -1,19 +1,29 @@
 {
-  "name": "Malith's Downloader",
-  "description": "A simple Telegram bot tp download and upload m3u8 links to telegram!",
+  "name": "Downloader",
+  "description": "M3U8 Downloader for TG",
   "repository": "https://github.com/MalithCrpt/M3U8_downloader",
   "env": {
     "BOT_TOKEN": {
-      "description": "Your bot token from BotFather",
+      "description": "Your bot token",
       "required": true
     },
     "API_ID": {
-      "description": "Your API ID from my.telegram.org",
+      "description": "Your API ID",
       "required": true
     },
     "API_HASH": {
-      "description": "Your API Hash from my.telegram.org",
+      "description": "Your API hash",
       "required": true
     }
-  }
+  },
+  "addons": [
+    {
+      "plan": "heroku-postgresql"
+    }
+  ],
+  "buildpacks": [
+    {
+      "url": "https://github.com/heroku/heroku-buildpack-python"
+    }
+  ]
 }
