@@ -131,14 +131,14 @@ async def getting_format(url, msg):
  
  
  
-@app.on_message(filters.private & filters.command(['formats']))
+@app.on_message(filters.private & filters.command('formats'))
 async def getFormat(bot:Client, msg:Message):
     if (" " in msg.text):
         cmd, url = msg.text.split(" ", 1)
     await getting_format(url=url, msg=msg)
  
 
-@app.on_message(filters.private & filters.command(['formats']))
+@app.on_message(filters.private & filters.command('start'))
 async def getFormat(bot:Client, msg:Message):
     await msg.reply_text(f'**Welcome {msg.from_user.mention}**')
  
