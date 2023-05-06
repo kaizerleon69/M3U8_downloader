@@ -3,7 +3,7 @@
   "description": "M3U8 Downloader for TG",
   "repository": "https://github.com/MalithCrpt/M3U8_downloader",
   "env": {
-    "BOT_TOKEN": {
+    "TG_BOT_TOKEN": {
       "description": "Your bot token",
       "required": true
     },
