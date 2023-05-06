@@ -137,7 +137,7 @@ async def getFormat(bot: Client, msg: Message):
 
 @app.on_message(filters.private & filters.command('start'))
 async def getFormat(bot: Client, msg: Message):
-  await msg.reply_text(f'**Welcome {msg.from_user.mention}**')
+  await msg.reply_text(f'**Welcome Dear {msg.from_user.mention}**')
 
 
 @app.on_message(filters.incoming | filters.private & filters.text)
