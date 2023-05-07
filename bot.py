@@ -14,38 +14,29 @@ app = Client("Malith:memory:",
              api_hash=api_hash,
              bot_token=bot_token)
 
-def download_m3u8(url, download_directory, minus_f_format="best"):
-    command_to_exec = {
-        "format": minus_f_format,
-        "continue_dl": True,
-        "hls_prefer_ffmpeg": True,
-        "embed_subs": True,
-        "outtmpl": download_directory
-    }
-    with youtube_dl.YoutubeDL(command_to_exec) as ydl:
-        ydl.download([url])
+
+def download_m3u8_video(url, output_path):
+    dl = M3U8_DL(url)
+    dl.download()
+    dl.to_mp4(output_path)
+
 
     
 @app.on_message(filters.command("start"))
 async def start(_, message):
-    await message.reply_text("Welcome ")
+    await message.reply_text("Welcome dsfds")
 
-@app.on_message(filters.command(["download"]))
-async def download_handler(client: Client, message: Message):
-    url = message.text.split()[-1]
-    download_directory = "downloads/%(title)s.%(ext)s"
-    minus_f_format = "best"
+@app.on_message(filters.command("download") & filters.private)
+def download_video(client, message):
+    url = message.text.split(" ")[1]
+    output_path = "downloaded_video.mp4"
 
-    await message.reply("Downloading...")
-    download_m3u8(url, download_directory, minus_f_format)
-    await message.reply("Download completed. Uploading...")
-
-    with open(download_directory, 'rb') as f:
-        await client.send_document(chat_id=message.chat.id, document=f)
-
-    await message.reply("Upload completed.")
-
-
+    message.reply_text("Downloading and converting the video...")
+    try:
+        download_m3u8_video(url, output_path)
+        message.reply_text("Video downloaded and converted successfully.")
+    except Exception as e:
+        message.reply_text(f"Error: {e}")
 
 print('Bot starting!!')
 app.run()
