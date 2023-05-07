@@ -1,7 +1,7 @@
 import os
 from pyrogram import Client, filters
-from pyrogram.types import Message
-import youtube_dl
+from m3u8_dl import M3U8_DL
+
 
 from config import Config
 
