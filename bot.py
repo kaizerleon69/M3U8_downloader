@@ -50,7 +50,6 @@ async def info_command(client, message):
         await message.reply(f"Error: {error}")
     else:
         await message.reply(f"Title: {video_info['title']}\n"
-                            f"Uploader: {video_info['uploader']}\n"
                             f"Duration: {video_info['duration']} seconds")
 
 
