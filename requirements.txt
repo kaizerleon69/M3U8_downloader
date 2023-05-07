@@ -3,3 +3,4 @@ TgCrypto
 ffmpeg-python
 youtube-dl
 m3u8_dl
+requests
