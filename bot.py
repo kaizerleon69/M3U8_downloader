@@ -12,13 +12,7 @@ app = Client("Malith:memory:",
              api_hash=api_hash,
              bot_token=bot_token)
 
-@app.on_message(filters.command("start"))
-async def start(_, message):
-    await message.reply_text("Send me an M3U8 URL.")
-    
-
-
-async def download_video_info(url):
+async def download_m3u8(url):
     command_to_exec = [
         "youtube-dl",
         "--no-warnings",
@@ -39,17 +33,23 @@ async def download_video_info(url):
     if e_response:
         return None, e_response
     else:
-        video_info = json.loads(t_response)
-        return video_info, None
+        video_data = json.loads(t_response)
+        return video_data['url'], None
 
-@app.on_message(filters.command("info"))
-async def info_command(client, message):
-    url = message.text.split(" ", 1)[1]
-    video_info, error = await download_video_info(url)
+    
+@app.on_message(filters.command("start"))
+async def start(_, message):
+    await message.reply_text("Welcome to the m3u8 downloader bot! Send me a URL and I'll download the m3u8 file for you.")
+
+@app.on_message(filters.text)
+async def download(_, message):
+    url = message.text
+    m3u8_url, error = await download_m3u8(url)
+
     if error:
-        await message.reply(f"Error: {error}")
+        await message.reply_text(f"Error downloading m3u8 file: {error}")
     else:
-        await message.reply(f"Title: {video_info['title']}\n")
+        await message.reply_text(f"Downloaded m3u8 file: {m3u8_url}")
 
 
 print('Bot starting!!')
