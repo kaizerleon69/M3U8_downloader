@@ -49,8 +49,7 @@ async def info_command(client, message):
     if error:
         await message.reply(f"Error: {error}")
     else:
-        await message.reply(f"Title: {video_info['title']}\n"
-                            f"Duration: {video_info['duration']} seconds")
+        await message.reply(f"Title: {video_info['title']}\n")
 
 
 print('Bot starting!!')
