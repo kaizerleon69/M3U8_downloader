@@ -30,8 +30,6 @@ async def download(_, message):
     except Exception as e:
         await message.reply_text(f"Error: {e}")
 
-app.run()
-
 
 print('Bot starting!!')
 app.run()
