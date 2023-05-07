@@ -30,7 +30,7 @@ def convert_m3u8_to_mp4():
 
 def upload_mp4():
     with open('video.mp4', 'rb') as f:
-        client.send_video(chat_id=<chat_id>, video=f, caption=<caption>)
+        app.send_video(chat_id=<chat_id>, video=f)
 
 
     
