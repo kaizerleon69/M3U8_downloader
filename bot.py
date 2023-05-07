@@ -1,7 +1,6 @@
+import asyncio
+import json
 from pyrogram import Client, filters
-import ffmpeg
-import os
-
 from config import Config
 
 bot_token = Config.TG_BOT_TOKEN
@@ -17,29 +16,42 @@ app = Client("Malith:memory:",
 async def start(_, message):
     await message.reply_text("Send me an M3U8 URL.")
     
-@app.on_message(filters.command("download"))
-async def download_m3u8_video(client, message):
-    if len(message.command) < 2:
-        await message.reply("Please provide the m3u8 URL.")
-        return
 
-    url = message.command[1]
-    output_file = "output1.mp4"
 
-    try:
-        await message.reply("Downloading and processing the video...")
+async def download_video_info(url):
+    command_to_exec = [
+        "youtube-dl",
+        "--no-warnings",
+        "--youtube-skip-dash-manifest",
+        "-j",
+        url
+    ]
 
-        # Download and process the video using ffmpeg-python
-        input_stream = ffmpeg.input(url, err_detect="ignore_err")
-        output_stream = ffmpeg.output(input_stream, output_file, c="copy", bsf_a="aac_adtstoasc")
-        ffmpeg.run(output_stream)
+    process = await asyncio.create_subprocess_exec(
+        *command_to_exec,
+        stdout=asyncio.subprocess.PIPE,
+        stderr=asyncio.subprocess.PIPE,
+    )
+    stdout, stderr = await process.communicate()
+    e_response = stderr.decode().strip()
+    t_response = stdout.decode().strip()
 
-        await message.reply("Uploading the video...")
-        await app.send_video(message.chat.id, output_file)
-        os.remove(output_file)
-    except Exception as e:
-        await message.reply(f"Error: {e}")
+    if e_response:
+        return None, e_response
+    else:
+        video_info = json.loads(t_response)
+        return video_info, None
 
+@app.on_message(filters.command("info"))
+async def info_command(client, message):
+    url = message.text.split(" ", 1)[1]
+    video_info, error = await download_video_info(url)
+    if error:
+        await message.reply(f"Error: {error}")
+    else:
+        await message.reply(f"Title: {video_info['title']}\n"
+                            f"Uploader: {video_info['uploader']}\n"
+                            f"Duration: {video_info['duration']} seconds")
 
 
 print('Bot starting!!')
