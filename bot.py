@@ -28,9 +28,9 @@ def convert_m3u8_to_mp4():
         .run()
     )
 
-def upload_mp4():
+def upload_mp4(client):
     with open('video.mp4', 'rb') as f:
-        app.send_video(chat_id=<chat_id>, video=f)
+        client.send_video(chat_id=<chat_id>, video=f)
 
 
     
@@ -43,7 +43,7 @@ async def convert_video(client: Client, message: Message):
     url = message.text.split(' ')[1]
     download_m3u8(url)
     convert_m3u8_to_mp4()
-    upload_mp4()
+    upload_mp4(client)
 
     await message.reply_text("Video converted and uploaded!")
 
