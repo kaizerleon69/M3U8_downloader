@@ -18,7 +18,7 @@ async def download_m3u8(url):
         "--no-warnings",
         "--youtube-skip-dash-manifest",
         "-j",
-        url
+        url,
     ]
 
     process = await asyncio.create_subprocess_exec(
@@ -30,26 +30,34 @@ async def download_m3u8(url):
     e_response = stderr.decode().strip()
     t_response = stdout.decode().strip()
 
-    if e_response:
-        return None, e_response
+    if not e_response:
+        video_info = json.loads(t_response)
+        video_url = video_info.get("url")
+        file_name = video_info.get("title")
+        return video_url, file_name
     else:
-        video_data = json.loads(t_response)
-        return video_data['url'], None
+        return None, None
 
     
 @app.on_message(filters.command("start"))
 async def start(_, message):
-    await message.reply_text("Welcome to the m3u8 downloader bot! Send me a URL and I'll download the m3u8 file for you.")
+    await message.reply_text("Welcome to the m3u8 downloader bot! Send me a URL ")
 
 @app.on_message(filters.text)
-async def download(_, message):
+async def download_and_upload(client, message):
     url = message.text
-    m3u8_url, error = await download_m3u8(url)
+    if "m3u8" in url:
+        video_url, file_name = await download_m3u8(url)
+        if video_url and file_name:
+            await message.reply(f"Downloading {file_name}...")
+            os.system(f'wget -O "{file_name}.mp4" "{video_url}"')
+            await message.reply(f"Uploading {file_name}...")
+            await client.send_video(message.chat.id, f"{file_name}.mp4")
+            os.remove(f"{file_name}.mp4")
+            await message.reply("Upload completed.")
+        else:
+            await message.reply("Error downloading the video.")
 
-    if error:
-        await message.reply_text(f"Error downloading m3u8 file: {error}")
-    else:
-        await message.reply_text(f"Downloaded m3u8 file: {m3u8_url}")
 
 
 print('Bot starting!!')
